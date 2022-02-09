@@ -18,9 +18,9 @@ class ContactsController{
         switch ($this->requestMethod) {
             case 'GET':
                 if ($this->userId) {
-                    $response = $this->getContacts($this->userId);
+                    $response = $this->getContactFromRequest($this->userId);
                 } else {
-                    $response = $this->getAllContacts();
+                    $response = $this->getAllContactsFromRequest();
                 };
                 break;
             case 'POST':
@@ -30,7 +30,7 @@ class ContactsController{
                 $response = $this->updateContactFromRequest($this->userId);
                 break;            
             case 'DELETE':
-                $response = $this->deleteContacts($this->userId);
+                $response = $this->deleteContactsFromRequest($this->userId);
                 break;
             default:
                 $response = $this->notFoundResponse();
@@ -42,7 +42,7 @@ class ContactsController{
         }
     }
 
-    private function getContacts($id){
+    private function getContactFromRequest($id){
         $result = $this->contacts->get($id);
         if (! $result) {
             return $this->notFoundResponse();
@@ -52,7 +52,20 @@ class ContactsController{
         return $response;
     }
 
-    private function deleteContacts($id){
+    private function updateContactFromRequest($id){
+        $result = $this->contacts->get($id);
+        if (! $result) {
+            return $this->notFoundResponse();
+        }        
+        $input = (array) json_decode(file_get_contents('php://input'), TRUE);
+        $input += ["id" => $id];
+        $this->contacts->edit($input);
+        $response['status_code_header'] = 'HTTP/1.1 200 OK';
+        $response['body'] = null;
+        return $response;
+    }
+
+    private function deleteContactsFromRequest($id){
         $result = $this->contacts->delete($id);
         if (! $result) {
             return $this->notFoundResponse();
@@ -62,7 +75,7 @@ class ContactsController{
         return $response;
     }
 
-    private function getAllContacts(){
+    private function getAllContactsFromRequest(){
         $result = $this->contacts->getAll();
         if (! $result) {
             return $this->notFoundResponse();
@@ -74,34 +87,11 @@ class ContactsController{
 
     private function createContactsFromRequest(){
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-
-        // if (! $this->validateContacto($input)) {
-        //     return $this->unprocessableEntityResponse();
-        // }
         $this->contacts->set($input);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
         return $response;
     }
-
-    private function updateContactFromRequest($id){
-        $result = $this->contacts->get($id);
-
-        if (! $result) {
-            return $this->notFoundResponse();
-        }        
-        $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-        array_push($input,$id);
-        // if (! $this->validateContacto($input)) {
-        //     return $this->unprocessableEntityResponse();
-        // }
-        $this->contacts->edit($input);
-        $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = null;
-        return $response;
-    }
-
-
 
     private function notFoundResponse(){
         $response['status_code_header'] = 'HTTP/1.1 404 Not Found';
