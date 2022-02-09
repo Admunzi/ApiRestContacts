@@ -1,11 +1,3 @@
-<!-- 
-    METHOD
-    GET     SELECT ALL  http://apirestcontactos.local/contacts
-    GET     SELECT ONE  http://apirestcontactos.local/contacts/1
-    PUT     UPDATE      http://apirestcontactos.local/contacts/6 -> "body" ->{"name": "Alex","tlf": "555658694","mail": "raul@gmail.com"}
-    DELETE  DELETE      http://apirestcontactos.local/contacts/6
-    POST    INSERT      http://apirestcontactos.local/contacts -> "body" ->{"name": "Alex","tlf": "555658694","mail": "raul@gmail.com"}
--->
 <?php
 require "../bootstrap.php";
 
