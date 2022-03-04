@@ -11,3 +11,13 @@
 | PUT | /contacts/ {id} | Update one contact | {"name": "Alex","tlf": "555658694","mail": "raul@gmail.com"} |
 | DELETE | /contacts/ {id} | Delete one contact |
 
+## VirtualHost
+    <VirtualHost *>
+        DocumentRoot "C:/xampp/htdocs/dws/api1/public/"
+        ServerName apirestcontactos.local
+        <Directory "C:/xampp/htdocs/dws/api1/public/">
+            Options All
+            AllowOverride All
+            Require all granted
+        </Directory>
+    </VirtualHost>
